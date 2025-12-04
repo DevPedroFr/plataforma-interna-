@@ -1,0 +1,25 @@
+.venv
+.env
+.python-version
+pyproject.toml
+uv.lock
+inssues.md
+__pycache__/
+migrations/
+
+# Logs
+logs/*.log
+
+# Celery
+celerybeat-schedule*
+celerybeat.pid
+
+# Database
+*.sqlite3
+
+# Static files
+staticfiles/
+
+# Screenshots de debug
+*.png
+login_page.html

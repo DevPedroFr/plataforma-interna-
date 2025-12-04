@@ -1,0 +1,1289 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Vacinação - Painel Interno</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            padding: 0 20px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .logo h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .logo p {
+            font-size: 0.8rem;
+            opacity: 0.7;
+            margin-top: 5px;
+        }
+
+        .menu {
+            list-style: none;
+        }
+
+        .menu-item {
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .menu-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .menu-item.active {
+            background-color: rgba(255, 255, 255, 0.15);
+            border-left: 3px solid #4CAF50;
+        }
+
+        .menu-item i {
+            margin-right: 10px;
+            font-size: 1.1rem;
+        }
+
+        .content {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .header h2 {
+            font-size: 1.8rem;
+            color: #2a5298;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #2a5298;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .tab-content {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            padding: 25px;
+            min-height: 500px;
+        }
+
+        .tab-pane {
+            display: none;
+        }
+
+        .tab-pane.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            border-left: 4px solid #2a5298;
+        }
+
+        .card h3 {
+            font-size: 1rem;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .card .value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #2a5298;
+        }
+
+        .card .trend {
+            font-size: 0.8rem;
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+        }
+
+        .trend.up {
+            color: #4CAF50;
+        }
+
+        .trend.down {
+            color: #f44336;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        th {
+            background-color: #f5f7fa;
+            font-weight: 600;
+            color: #555;
+        }
+
+        tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: #2a5298;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #1e3c72;
+        }
+
+        .btn-success {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #45a049;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .calendar-header {
+            text-align: center;
+            font-weight: bold;
+            padding: 10px;
+            background-color: #f5f7fa;
+            border-radius: 4px;
+        }
+
+        .calendar-day {
+            height: 80px;
+            padding: 8px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .calendar-day:hover {
+            background-color: #f0f5ff;
+        }
+
+        .calendar-day.today {
+            background-color: #e3f2fd;
+            border-color: #2a5298;
+        }
+
+        .calendar-day.has-event::after {
+            content: "";
+            display: block;
+            width: 8px;
+            height: 8px;
+            background-color: #4CAF50;
+            border-radius: 50%;
+            margin-top: 5px;
+        }
+
+        .calendar-day.prev-month,
+        .calendar-day.next-month {
+            opacity: 0.5;
+            color: #999;
+        }
+
+        .calendar-day.today {
+            background-color: #e3f2fd;
+            border: 2px solid #2196F3;
+            font-weight: bold;
+            color: #2196F3;
+        }
+
+        .user-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .user-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .user-item:hover {
+            background-color: #f0f0f0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .user-avatar-small {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #2a5298;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+
+        .user-details {
+            flex: 1;
+        }
+
+        .user-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .user-role {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .stock-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .stock-info h4 {
+            margin-bottom: 5px;
+        }
+
+        .stock-info p {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .stock-status {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .status-available {
+            background-color: #e8f5e9;
+            color: #4CAF50;
+        }
+
+        .status-low {
+            background-color: #fff3e0;
+            color: #ff9800;
+        }
+
+        .status-out {
+            background-color: #ffebee;
+            color: #f44336;
+        }
+
+        .status-completed {
+            background-color: #e8f5e9;
+            color: #4CAF50;
+        }
+
+        .status-cancelled {
+            background-color: #ffebee;
+            color: #f44336;
+        }
+
+        .status-scheduled {
+            background-color: #e3f2fd;
+            color: #2196f3;
+        }
+
+        .status-confirmed {
+            background-color: #fff3e0;
+            color: #ff9800;
+        }
+
+
+
+        .sync-section {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #2a5298;
+        }
+
+        .sync-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .last-sync {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #2a5298;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 2s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        .empty-state h4 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: #666;
+        }
+
+        .empty-state p {
+            color: #999;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo">
+                <h1>Sistema de Vacinação</h1>
+                <p>Painel Interno</p>
+            </div>
+            <ul class="menu">
+                <li class="menu-item active" data-tab="dashboard">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                </li>
+                <li class="menu-item" data-tab="calendar">
+                    <i class="far fa-calendar-alt"></i> Calendário
+                </li>
+                <li class="menu-item" data-tab="users">
+                    <i class="fas fa-users"></i> Usuários
+                </li>
+                <li class="menu-item" data-tab="stock">
+                    <i class="fas fa-boxes"></i> Estoque
+                </li>
+            </ul>
+        </div>
+
+        <!-- Conteúdo Principal -->
+        <div class="content">
+            <div class="header">
+                <h2 id="page-title">Dashboard</h2>
+                <div class="user-info" id="userDropdown" style="position: relative; cursor: pointer;">
+                    <div class="user-avatar">{{ current_user.name|first }}</div>
+                    <span>{{ current_user.name }}</span>
+                    <i class="fas fa-chevron-down" style="margin-left: 8px; font-size: 0.8rem;"></i>
+                    
+                    <!-- Dropdown Menu -->
+                    <div style="
+                        position: absolute;
+                        top: 100%;
+                        right: 0;
+                        background: white;
+                        border-radius: 8px;
+                        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+                        min-width: 200px;
+                        margin-top: 10px;
+                        display: none;
+                        z-index: 1000;
+                    " id="userMenu">
+                        <div style="padding: 15px;">
+                            <div style="border-bottom: 1px solid #f0f0f0; padding-bottom: 10px; margin-bottom: 10px;">
+                                <p style="margin: 0; color: #666; font-size: 0.85rem;">Conectado como</p>
+                                <p style="margin: 0; color: #333; font-weight: 600;">{{ current_user.name }}</p>
+                                <p style="margin: 0; color: #2a5298; font-size: 0.9rem; margin-top: 5px;">
+                                    <span style="background: #e3f2fd; padding: 3px 8px; border-radius: 12px; display: inline-block;">
+                                        {{ current_user.position }}
+                                    </span>
+                                </p>
+                            </div>
+                            <a href="{% url 'auth:profile' %}" style="
+                                display: block;
+                                padding: 10px;
+                                color: #333;
+                                text-decoration: none;
+                                border-radius: 4px;
+                                transition: all 0.3s ease;
+                                margin-bottom: 5px;
+                            " onmouseover="this.style.backgroundColor='#f5f5f5';" onmouseout="this.style.backgroundColor='transparent';">
+                                <i class="fas fa-user-circle"></i> Meu Perfil
+                            </a>
+                            <a href="{% url 'auth:logout' %}" style="
+                                display: block;
+                                padding: 10px;
+                                color: #f44336;
+                                text-decoration: none;
+                                border-radius: 4px;
+                                transition: all 0.3s ease;
+                            " onmouseover="this.style.backgroundColor='#ffebee';" onmouseout="this.style.backgroundColor='transparent';">
+                                <i class="fas fa-sign-out-alt"></i> Sair
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content">
+                <!-- Dashboard -->
+                <div id="dashboard" class="tab-pane active">
+                    <h3>Visão Geral</h3>
+                    <div class="dashboard-grid">
+                        <div class="card">
+                            <h3>Vacinas Aplicadas</h3>
+                            <div class="value">{{ vaccines_applied }}</div>
+                            <div class="trend up">
+                                <i class="fas fa-arrow-up"></i> 12% em relação ao mês anterior
+                            </div>
+                        </div>
+                        <div class="card">
+                            <h3>Pacientes Cadastrados</h3>
+                            <div class="value">{{ patients_registered }}</div>
+                            <div class="trend up">
+                                <i class="fas fa-arrow-up"></i> 5% em relação ao mês anterior
+                            </div>
+                        </div>
+                        <div class="card">
+                            <h3>Estoque Disponível</h3>
+                            <div class="value">{{ stock_percentage }}%</div>
+                            <div class="trend down">
+                                <i class="fas fa-arrow-down"></i> 8% em relação ao mês anterior
+                            </div>
+                        </div>
+                        <div class="card">
+                            <h3>Próximas Vacinações</h3>
+                            <div class="value">{{ next_vaccinations }}</div>
+                            <div class="trend up">
+                                <i class="fas fa-arrow-up"></i> 15% em relação à semana anterior
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3>Próximos Agendamentos</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Paciente</th>
+                                <th>Vacina</th>
+                                <th>Data</th>
+                                <th>Horário</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for appointment in appointments %}
+                            <tr>
+                                <td>{{ appointment.patient }}</td>
+                                <td>{{ appointment.vaccine }}</td>
+                                <td>{{ appointment.date }}</td>
+                                <td>{{ appointment.time }}</td>
+                                <td><span class="status-available stock-status">{{ appointment.status }}</span></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+
+                <!-- Calendário -->
+                <div id="calendar" class="tab-pane">
+                    <div class="sync-section">
+                        <div class="sync-info">
+                            <div>
+                                <h4 style="margin-bottom: 5px;">Sincronização com Calendário do Sistema</h4>
+                                <p class="last-sync">Última sincronização: <span id="lastSyncCalendar">Nunca</span></p>
+                            </div>
+                            <div>
+                                <button id="syncCalendarBtn" class="btn btn-success">
+                                    <i class="fas fa-sync-alt"></i> Sincronizar Calendário
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="loading" id="loadingCalendar">
+                        <div class="spinner"></div>
+                        <p>Sincronizando calendário com o sistema...</p>
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h3>Calendário de Vacinações</h3>
+                        <div>
+                            <button class="btn btn-primary"><i class="fas fa-plus"></i> Novo Agendamento</button>
+                        </div>
+                    </div>
+                    
+                    <div class="calendar-grid">
+                        <div class="calendar-header">Dom</div>
+                        <div class="calendar-header">Seg</div>
+                        <div class="calendar-header">Ter</div>
+                        <div class="calendar-header">Qua</div>
+                        <div class="calendar-header">Qui</div>
+                        <div class="calendar-header">Sex</div>
+                        <div class="calendar-header">Sáb</div>
+                        
+                        <div id="calendar-days"></div>
+                    </div>
+                    
+                    <div style="margin-top: 30px;">
+                        <h4>Agendamentos de Hoje</h4>
+                        <div class="user-list" id="todayAppointmentsList">
+                            <div class="empty-state">
+                                <i class="fas fa-calendar-day"></i>
+                                <h4>Carregando agendamentos...</h4>
+                                <p>Aguarde enquanto carregamos os agendamentos do dia.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Usuários -->
+                <div id="users" class="tab-pane">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h3>Gerenciamento de Usuários</h3>
+                        <div>
+                            <button class="btn btn-primary"><i class="fas fa-plus"></i> Novo Usuário</button>
+                        </div>
+                    </div>
+                    
+                    <div class="user-list">
+                        {% for user in users %}
+                        <div class="user-item">
+                            <div class="user-avatar-small">{{ user.initials }}</div>
+                            <div class="user-details">
+                                <div class="user-name">{{ user.name }}</div>
+                                <div class="user-role">{{ user.role }}</div>
+                            </div>
+                            <div>
+                                <button class="btn btn-primary" style="margin-right: 10px;">Editar</button>
+                                <button class="btn" style="background-color: #f5f5f5;" onclick="excluirUsuario('{{ user.name }}', '{{ user.name }}')">Desativar</button>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Estoque -->
+                <div id="stock" class="tab-pane">
+                    <div class="sync-section">
+                        <div class="sync-info">
+                            <div>
+                                <h4 style="margin-bottom: 5px;">Sincronização com Sistema Matriz</h4>
+                                <p class="last-sync">Última sincronização: <span id="lastSyncTime">Nunca</span></p>
+                            </div>
+                            <div>
+                                <button id="syncStockBtn" class="btn btn-success">
+                                    <i class="fas fa-sync-alt"></i> Sincronizar Estoque
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="loading" id="loadingStock">
+                        <div class="spinner"></div>
+                        <p>Sincronizando estoque com o sistema matriz...</p>
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h3>Controle de Estoque</h3>
+                        <div>
+                            <button class="btn btn-primary"><i class="fas fa-plus"></i> Adicionar Item</button>
+                        </div>
+                    </div>
+                    
+                    <div id="stockList">
+                        {% for vaccine in vaccines %}
+                        <div class="stock-item">
+                            <div class="stock-info">
+                                <h4>{{ vaccine.name }}</h4>
+                                <p>Estoque mínimo: {{ vaccine.minimum_stock }} unidades</p>
+                            </div>
+                            <div>
+                                {% if vaccine.current_stock == 0 %}
+                                <span class="stock-status status-out">Esgotado</span>
+                                {% elif vaccine.current_stock < vaccine.minimum_stock %}
+                                <span class="stock-status status-low">Estoque Baixo ({{ vaccine.current_stock }} unidades)</span>
+                                {% else %}
+                                <span class="stock-status status-available">Disponível ({{ vaccine.current_stock }} unidades)</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="empty-state">
+                            <i class="fas fa-box-open"></i>
+                            <h4>Nenhum dado de estoque disponível</h4>
+                            <p>Clique em "Sincronizar Estoque" para carregar os dados do sistema matriz</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Navegação entre abas
+            const menuItems = document.querySelectorAll('.menu-item');
+            const tabPanes = document.querySelectorAll('.tab-pane');
+            
+            menuItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    menuItems.forEach(i => i.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const tabId = this.getAttribute('data-tab');
+                    tabPanes.forEach(pane => pane.classList.remove('active'));
+                    document.getElementById(tabId).classList.add('active');
+                    
+                    document.getElementById('page-title').textContent = this.textContent.trim();
+                    
+                    // Carrega dados específicos da aba quando acessada
+                    if (tabId === 'calendar') {
+                        setTimeout(loadCalendarAppointments, 100);
+                    }
+                });
+            });
+
+            // Sincronização de estoque
+            const syncBtn = document.getElementById('syncStockBtn');
+            if (syncBtn) {
+                syncBtn.addEventListener('click', syncStock);
+            }
+
+            // Sincronização de usuários
+            const syncUsersBtn = document.getElementById('syncUsersBtn');
+            if (syncUsersBtn) {
+                syncUsersBtn.addEventListener('click', syncRecentUsers);
+            }
+
+            // Sincronização de calendário
+            const syncCalendarBtn = document.getElementById('syncCalendarBtn');
+            if (syncCalendarBtn) {
+                syncCalendarBtn.addEventListener('click', syncCalendar);
+            }
+
+            // Gera o calendário inicial e carrega agendamentos se estiver na aba calendário
+            if (document.getElementById('calendar').classList.contains('active')) {
+                generateCalendar(new Date());
+                loadCalendarAppointments();
+            }
+
+            // Atualizar última sincronização
+            updateLastSyncTime();
+        });
+
+        function syncStock() {
+            const loadingElement = document.getElementById('loadingStock');
+            const syncBtn = document.getElementById('syncStockBtn');
+            
+            // Mostrar loading
+            loadingElement.style.display = 'block';
+            syncBtn.disabled = true;
+            syncBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sincronizando...';
+            
+            fetch('/scraping/sync-stock/', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCSRFToken(),
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    showNotification('✅ ' + data.message, 'success');
+                    updateLastSyncTime();
+                    
+                    // Recarregar os dados do estoque
+                    loadStockData();
+                } else {
+                    throw new Error(data.message);
+                }
+            })
+            .catch(error => {
+                showNotification('❌ Erro na sincronização: ' + error.message, 'error');
+            })
+            .finally(() => {
+                // Esconder loading
+                loadingElement.style.display = 'none';
+                if (syncBtn) {
+                    syncBtn.disabled = false;
+                    syncBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Sincronizar Estoque';
+                }
+            });
+        }
+
+        function syncRecentUsers() {
+            const loadingElement = document.getElementById('loadingUsers');
+            const syncBtn = document.getElementById('syncUsersBtn');
+            
+            loadingElement.style.display = 'block';
+            syncBtn.disabled = true;
+            syncBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sincronizando...';
+            
+            fetch('/scraping/sync-recent-users/', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCSRFToken(),
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    showNotification('✅ ' + data.message, 'success');
+                    updateLastSyncTimeUsers();
+                    updateRecentUsersList(data.users);
+                } else {
+                    throw new Error(data.message);
+                }
+            })
+            .catch(error => {
+                showNotification('❌ Erro na sincronização: ' + error.message, 'error');
+            })
+            .finally(() => {
+                loadingElement.style.display = 'none';
+                if (syncBtn) {
+                    syncBtn.disabled = false;
+                    syncBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Sincronizar Usuários';
+                }
+            });
+        }
+
+        // Calendário - Sincronização
+        function syncCalendar() {
+            const syncBtn = document.getElementById('syncCalendarBtn');
+            const loadingElement = document.getElementById('loadingCalendar');
+            
+            if (loadingElement) loadingElement.style.display = 'block';
+            syncBtn.disabled = true;
+            syncBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sincronizando...';
+            
+            fetch('/sync-calendar/', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCSRFToken(),
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    showNotification('✅ ' + data.message, 'success');
+                    updateLastSyncCalendar();
+                    // Recarregar os agendamentos após sincronização
+                    loadCalendarAppointments();
+                } else {
+                    throw new Error(data.message);
+                }
+            })
+            .catch(error => {
+                showNotification('❌ Erro na sincronização: ' + error.message, 'error');
+            })
+            .finally(() => {
+                if (loadingElement) loadingElement.style.display = 'none';
+                syncBtn.disabled = false;
+                syncBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Sincronizar Calendário';
+            });
+        }
+
+        // Carregar agendamentos do calendário
+        function loadCalendarAppointments() {
+            fetch('/calendar-appointments/')
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    updateCalendarView(data.appointments);
+                } else {
+                    console.error('Erro ao carregar agendamentos:', data.message);
+                    showNotification('❌ Erro ao carregar agendamentos: ' + data.message, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Erro ao carregar agendamentos:', error);
+                showNotification('❌ Erro ao carregar agendamentos', 'error');
+            });
+        }
+
+        function generateCalendar(date) {
+            const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+            const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+            const firstDayIndex = firstDay.getDay();
+            const lastDayDate = lastDay.getDate();
+            const today = new Date();
+            
+            // Obtém o último dia do mês anterior para preencher os dias iniciais
+            const prevLastDay = new Date(date.getFullYear(), date.getMonth(), 0).getDate();
+            
+            const calendarContainer = document.querySelector('.calendar-grid');
+            const daysHtml = [];
+            
+            // Adiciona os dias do mês anterior
+            for (let x = firstDayIndex; x > 0; x--) {
+                const dayNum = prevLastDay - x + 1;
+                daysHtml.push(`<div class="calendar-day prev-month">${dayNum}</div>`);
+            }
+            
+            // Adiciona os dias do mês atual
+            for (let i = 1; i <= lastDayDate; i++) {
+                const isToday = i === today.getDate() && 
+                               date.getMonth() === today.getMonth() && 
+                               date.getFullYear() === today.getFullYear();
+                               
+                const dayClass = isToday ? 'calendar-day today' : 'calendar-day';
+                daysHtml.push(`<div class="${dayClass}" data-date="${i}">${i}</div>`);
+            }
+            
+            // Adiciona os dias do próximo mês se necessário
+            const totalDays = daysHtml.length;
+            const remainingDays = 42 - totalDays; // 6 linhas x 7 dias = 42
+            
+            for (let j = 1; j <= remainingDays; j++) {
+                daysHtml.push(`<div class="calendar-day next-month">${j}</div>`);
+            }
+            
+            // Insere os dias no grid do calendário
+            const daysContainer = document.querySelector('.calendar-grid');
+            const headers = Array.from(daysContainer.querySelectorAll('.calendar-header'));
+            daysContainer.innerHTML = '';
+            
+            // Readiciona os cabeçalhos
+            headers.forEach(header => daysContainer.appendChild(header));
+            
+            // Adiciona os dias
+            daysHtml.forEach(day => {
+                daysContainer.insertAdjacentHTML('beforeend', day);
+            });
+        }
+
+        function updateCalendarView(appointments) {
+            // Atualiza a lista de agendamentos de hoje
+            const today = new Date();
+            const todayFormatted = today.toLocaleDateString('pt-BR');
+            
+            const todayAppointments = appointments.filter(apt => {
+                return apt.date === todayFormatted;
+            });
+            
+            // Gera o calendário para o mês atual
+            generateCalendar(today);
+            
+            updateTodayAppointmentsList(todayAppointments);
+            
+            // Atualiza os marcadores no calendário
+            updateCalendarMarkers(appointments);
+        }
+
+        function updateTodayAppointmentsList(appointments) {
+            const container = document.getElementById('todayAppointmentsList');
+            if (!container) return;
+            
+            if (appointments.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state" style="padding: 20px;">
+                        <i class="fas fa-calendar-day"></i>
+                        <h4>Nenhum agendamento para hoje</h4>
+                        <p>Não há agendamentos marcados para o dia de hoje.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = '';
+            appointments.forEach(appointment => {
+                let statusClass = 'status-scheduled';
+                if (appointment.status_raw === 'completed') statusClass = 'status-completed';
+                if (appointment.status_raw === 'cancelled') statusClass = 'status-cancelled';
+                if (appointment.status_raw === 'confirmed') statusClass = 'status-confirmed';
+                
+                html += `
+                    <div class="user-item">
+                        <div class="user-avatar-small">${appointment.patient.substring(0, 2).toUpperCase()}</div>
+                        <div class="user-details">
+                            <div class="user-name">${appointment.patient}</div>
+                            <div class="user-role">${appointment.vaccine} - ${appointment.time}</div>
+                        </div>
+                        <span class="stock-status ${statusClass}">${appointment.status}</span>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        function updateCalendarMarkers(appointments) {
+            // Remove marcadores existentes
+            document.querySelectorAll('.calendar-day.has-event').forEach(day => {
+                day.classList.remove('has-event');
+            });
+            
+            // Adiciona novos marcadores
+            appointments.forEach(appointment => {
+                const date = appointment.date; // formato DD/MM/YYYY
+                const dayNumber = parseInt(date.split('/')[0]);
+                
+                // Encontra o elemento do dia no calendário
+                const dayElements = document.querySelectorAll('.calendar-day');
+                dayElements.forEach(dayElement => {
+                    const dayText = dayElement.textContent.trim();
+                    if (parseInt(dayText) === dayNumber) {
+                        dayElement.classList.add('has-event');
+                    }
+                });
+            });
+        }
+
+        function updateLastSyncCalendar() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('pt-BR') + ' - ' + now.toLocaleDateString('pt-BR');
+            const lastSyncElement = document.getElementById('lastSyncCalendar');
+            if (lastSyncElement) {
+                lastSyncElement.textContent = timeString;
+            }
+        }
+
+        function loadStockData() {
+            fetch('/scraping/stock-data/')
+            .then(response => response.json())
+            .then(data => {
+                updateStockList(data.vaccines);
+            })
+            .catch(error => {
+                console.error('Erro ao carregar dados do estoque:', error);
+            });
+        }
+
+        function updateStockList(vaccines) {
+            const stockList = document.getElementById('stockList');
+            
+            if (!vaccines || vaccines.length === 0) {
+                stockList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-box-open"></i>
+                        <h4>Nenhum dado de estoque disponível</h4>
+                        <p>Clique em "Sincronizar Estoque" para carregar os dados do sistema matriz</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = '';
+            vaccines.forEach(vaccine => {
+                let statusClass, statusText;
+                
+                if (vaccine.stock === 0) {
+                    statusClass = 'status-out';
+                    statusText = 'Esgotado';
+                } else if (vaccine.stock < vaccine.min_stock) {
+                    statusClass = 'status-low';
+                    statusText = `Estoque Baixo (${vaccine.stock} unidades)`;
+                } else {
+                    statusClass = 'status-available';
+                    statusText = `Disponível (${vaccine.stock} unidades)`;
+                }
+                
+                html += `
+                    <div class="stock-item">
+                        <div class="stock-info">
+                            <h4>${vaccine.name}</h4>
+                            <p>Estoque mínimo: ${vaccine.min_stock} unidades</p>
+                        </div>
+                        <div>
+                            <span class="stock-status ${statusClass}">${statusText}</span>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            stockList.innerHTML = html;
+        }
+
+        function updateRecentUsersList(users) {
+            const usersList = document.getElementById('recentUsersList');
+            
+            if (!users || users.length === 0) {
+                usersList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-user-plus"></i>
+                        <h4>Nenhum usuário encontrado</h4>
+                        <p>Não há cadastros recentes disponíveis</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = '';
+            users.forEach(user => {
+                const responsibleInfo = [];
+                if (user.responsible1) responsibleInfo.push(user.responsible1);
+                if (user.responsible2) responsibleInfo.push(user.responsible2);
+                
+                const responsibleText = responsibleInfo.length > 0 
+                    ? 'Responsável: ' + responsibleInfo.join(' / ')
+                    : 'Cadastro próprio';
+                
+                html += `
+                    <div class="user-item">
+                        <div class="user-avatar-small">${user.initials}</div>
+                        <div class="user-details">
+                            <div class="user-name">${user.name}</div>
+                            <div class="user-role">
+                                Nascimento: ${user.birth_date} • ${responsibleText}<br>
+                                Cadastrado em: ${user.register_date}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            usersList.innerHTML = html;
+        }
+
+        function generateMockData() {
+            fetch('/scraping/generate-mock/')
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    showNotification('✅ ' + data.message, 'success');
+                    updateLastSyncTime();
+                    loadStockData();
+                }
+            })
+            .catch(error => {
+                showNotification('❌ Erro ao gerar dados: ' + error.message, 'error');
+            });
+        }
+
+        function updateLastSyncTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('pt-BR') + ' - ' + now.toLocaleDateString('pt-BR');
+            document.getElementById('lastSyncTime').textContent = timeString;
+        }
+
+        function updateLastSyncTimeUsers() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('pt-BR') + ' - ' + now.toLocaleDateString('pt-BR');
+            document.getElementById('lastSyncTimeUsers').textContent = timeString;
+        }
+
+        function getCSRFToken() {
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
+            return csrfToken ? csrfToken.value : '';
+        }
+
+        function showNotification(message, type = 'info') {
+            // Implementação simples de notificação
+            const alertClass = type === 'success' ? 'alert("✅ ' + message + '")' : 
+                            type === 'error' ? 'alert("❌ ' + message + '")' : 
+                            'alert("ℹ️ ' + message + '")';
+            eval(alertClass);
+        }
+
+        // User dropdown menu
+        document.addEventListener('DOMContentLoaded', function() {
+            const userDropdown = document.getElementById('userDropdown');
+            const userMenu = document.getElementById('userMenu');
+
+            if (userDropdown && userMenu) {
+                userDropdown.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    userMenu.style.display = userMenu.style.display === 'block' ? 'none' : 'block';
+                });
+
+                document.addEventListener('click', function(e) {
+                    if (!userDropdown.contains(e.target)) {
+                        userMenu.style.display = 'none';
+                    }
+                });
+            }
+        });
+
+        // Função para excluir usuário com validação de permissão
+        function excluirUsuario(username, userName) {
+            if (confirm(`Tem certeza que deseja desativar o usuário ${userName}?`)) {
+                fetch('/auth/delete_user/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCsrfTokenValue()
+                    },
+                    body: JSON.stringify({ username: username })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showCustomNotification('✅ Usuário excluído com sucesso', 'success');
+                        setTimeout(() => { location.reload(); }, 1500);
+                    } else {
+                        showCustomNotification('❌ ' + data.message, 'error');
+                    }
+                })
+                .catch((error) => {
+                    console.error('Erro:', error);
+                    showCustomNotification('❌ Erro ao tentar excluir.', 'error');
+                });
+            }
+        }
+
+        // Função para obter CSRF Token
+        function getCsrfTokenValue() {
+            const name = 'csrftoken';
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue || '{{ csrf_token }}';
+        }
+
+        // Função para exibir notificação customizada
+        function showCustomNotification(message, type = 'info') {
+            let popup = document.getElementById('popupMsg');
+            
+            if (!popup) {
+                popup = document.createElement('div');
+                popup.id = 'popupMsg';
+                popup.style.cssText = 'position:fixed;top:30px;right:30px;z-index:9999;padding:20px;background:#fff;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.2);font-size:16px;min-width:300px;';
+                document.body.appendChild(popup);
+            }
+            
+            popup.innerText = message;
+            popup.style.display = 'block';
+            
+            if (type === 'success') {
+                popup.style.background = '#d4edda';
+                popup.style.color = '#155724';
+                popup.style.borderLeft = '4px solid #28a745';
+            } else if (type === 'error') {
+                popup.style.background = '#f8d7da';
+                popup.style.color = '#721c24';
+                popup.style.borderLeft = '4px solid #dc3545';
+            } else {
+                popup.style.background = '#d1ecf1';
+                popup.style.color = '#0c5460';
+                popup.style.borderLeft = '4px solid #17a2b8';
+            }
+            
+            setTimeout(() => { popup.style.display = 'none'; }, 3000);
+        }
+    </script>
+</body>
+</html>

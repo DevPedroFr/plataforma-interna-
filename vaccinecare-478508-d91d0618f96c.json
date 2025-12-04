@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "vaccinecare-478508",
+  "private_key_id": "d91d0618f96c9d5dbaa644226ab9a0aecf502a40",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDxCsSzo2TsiSDc\nWUnCBEDtWm0Q+4u6sRk8mEwc4SaMUE2xazBbl4CgAA/VNb85OiYkOISRqLseXkNs\nF6Chzc2SL//oWkVyByM1uuWfRkO69bM10lms7M2h8ZxuSISvyD2PyfRZdYXeiaB4\nsPVmEJXw20UEElXxqVrBt5FHCOV8BF4dnBo2E1WMqsgDyl+qA/rjJkAHwArw+d7O\nDclpQFFamAFR0z17E5FnElvFgHBHXBh/QF7xrl+wWXRfWVToGo56CMIIV+5Y5HcQ\n9JEdkVUmSlP7sLsWwcIXFLNwPu4HexNTLJTOGGcheeKEpsFkGLKtVmpSsQ6VyLPA\nwMXHfeR5AgMBAAECggEACCncyMG5VA/T3//v0SVFkVRX78nj1648+Xyl9+9sgmGL\niWf6MraXmbOkKvd/nbT5YDjVd+fD80QZhU0VOLhTOfGBZFw++weWBXE/lXdIKXTo\nqCNoO+9RipEigr4BgmuQzDB4jllo2oUvkmQvN3ugfGW3ZBXT49P1byyj/AjSLt2X\n17RQLFJOwwujO0togFSlWg3uVWTq388Xkq9j/Gwv4QQtLbI2pE66Nk/CdOj//YQp\nniUjgZju8sL6TUSYZtmCeNdomcWE/xncio4HSP0cFi7GZTu3IYJX2X/RTHpPYDFM\nFMTGXXX1UrycD4WCIwHPfYx79/8lh86JlZTGtk8dNQKBgQD6tSU4d1g/lryu3RrG\n2DN1KeDmLVnOYtjiWRLUzVKirt4l7ccAw7G/Cd980vZxwN0vLglO6KqcsHyrADrJ\nEoEfNq8nT3dw5TGLUxqu7nY9+ggo9O552L9Uogkx1cxqKuwkN06KVZBQ/glOTGfp\nROP9/UL2iTYQ+J/dCVnPvFXFXQKBgQD2IWOk7/P8P3Mi5TJktTGpwMYNFnOL1TWK\nE/eGEg/Ennme5FzvHvhEVOq8MTNqn4GYxFcAzX+IQFDFE2SrtlCXT9H3FhgA5LKM\ngI0T9aRGb9ouywo4uEd+BEFEWDPYqapJDfKJRp7j9DePATs9rJ/r4hZLla5LE+Go\n2MArVDutzQKBgQC6ZfAUeXcdYB9NC4sbCCfKFqblvBYnQorqTzuXCElGNylnnc/1\nm4oN9XM6RUeB79kDeQDmsEoZUYZ/RR5v3NgvsuKrIYQ2ZdFeOx19rkIvdjSW7vRX\nl3U5oXegm8rtrJgBnTVB2LgB375ffqNLZjL05lXhIscV+yQwnQEvWGGU6QKBgHCt\n2oNhAu7hUWGRUh++wAy53zGQrLdAlbEv8OqlDCj0cDNo0o76O6h0w74CPEq82UTJ\n5hbM/WywHQoMFdNytLSA61vV9ok6Ke+ezndrxpgkjttLQtOysbAkXIjgZGP1UKr/\nQqDL/uPXIzRJ2QgkJlaD+7cAwHlIkc+N43QyrNulAoGBAPjfIIJFb7/NWOZSrBV1\nzAEijoDaAP501dLFUp7wYCloHUslEekhKCmXrPqWRgrzGmR/T8gWGyzC6rE9d54m\nU7p9Qhz2txYZAV8knh6XIc15/8XpT5NbDTaxRgth0/lgo0h4P0RWjFHhdTMAiVn+\noyaWKI8hphWeeehTVOZHxciZ\n-----END PRIVATE KEY-----\n",
+  "client_email": "forms-service@vaccinecare-478508.iam.gserviceaccount.com",
+  "client_id": "113522478098259774798",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/forms-service%40vaccinecare-478508.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

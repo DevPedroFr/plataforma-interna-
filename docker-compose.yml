@@ -1,0 +1,113 @@
+version: '3.8'
+
+services:
+  # ============================================================================
+  # REDIS - Broker de mensagens para Celery
+  # ============================================================================
+  redis:
+    image: redis:7-alpine
+    container_name: plataforma-jm-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ============================================================================
+  # DJANGO - Aplicação Web Principal
+  # ============================================================================
+  web:
+    build: .
+    container_name: plataforma-jm-web
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+      - static_volume:/app/staticfiles
+      - ./data:/app/data
+    ports:
+      - "8000:8000"
+    environment:
+      - DEBUG=True
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    env_file:
+      - .env
+    depends_on:
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # ============================================================================
+  # CELERY WORKER - Executa as tarefas em background
+  # ============================================================================
+  celery-worker:
+    build: .
+    container_name: plataforma-jm-celery-worker
+    command: celery -A vacination_system worker --loglevel=info --pool=solo
+    volumes:
+      - .:/app
+      - ./data:/app/data
+    environment:
+      - DEBUG=True
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    env_file:
+      - .env
+    depends_on:
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # ============================================================================
+  # CELERY BEAT - Agendador de tarefas (executa a cada 1 min)
+  # ============================================================================
+  celery-beat:
+    build: .
+    container_name: plataforma-jm-celery-beat
+    command: celery -A vacination_system beat --loglevel=info
+    volumes:
+      - .:/app
+      - ./data:/app/data
+    environment:
+      - DEBUG=True
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    env_file:
+      - .env
+    depends_on:
+      redis:
+        condition: service_healthy
+      celery-worker:
+        condition: service_started
+    restart: unless-stopped
+
+  # ============================================================================
+  # WAHA - WhatsApp HTTP API (Chatbot WhatsApp)
+  # ============================================================================
+  waha:
+    image: devlikeapro/waha:latest
+    container_name: plataforma-jm-waha
+    ports:
+      - "3000:3000"
+    environment:
+      # Configurações básicas
+      - WHATSAPP_HOOK_URL=http://web:8000/chatbot/webhook/whatsapp/
+      - WHATSAPP_HOOK_EVENTS=message,message.ack,session.status
+      - WHATSAPP_DEFAULT_ENGINE=WEBJS
+      # Autenticação (opcional - descomente se quiser proteger a API)
+      # - WHATSAPP_API_KEY=sua-api-key-secreta
+    volumes:
+      - waha_sessions:/app/.sessions
+    depends_on:
+      - web
+    restart: unless-stopped
+
+volumes:
+  redis_data:
+  static_volume:
+  waha_sessions:
