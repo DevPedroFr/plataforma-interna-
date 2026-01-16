@@ -12,7 +12,7 @@ DEBUG = config('DEBUG', default=True, cast=bool)
 # AUTENTICAÇÃO (users.json)
 # =========================================================================
 # Usuário "dono" (único com permissão para ver/resetar senhas de outros).
-SUPERADMIN_USERNAME = config('SUPERADMIN_USERNAME', default='pedro')
+SUPERADMIN_USERNAME = config('SUPERADMIN_USERNAME', default='admin')
 
 # Senha padrão para usuários criados (se não informada ou se o criador não for SUPERADMIN)
 DEFAULT_USER_PASSWORD = config('DEFAULT_USER_PASSWORD', default='123456')
@@ -79,6 +79,21 @@ LANGUAGE_CODE = 'pt-br'
 TIME_ZONE = 'America/Sao_Paulo'
 USE_I18N = True
 USE_TZ = True
+
+# ============================================================================
+# CONFIGURAÇÕES DE SESSÃO E SEGURANÇA
+# ============================================================================
+# Timeout de sessão: 1 hora (3600 segundos)
+SESSION_COOKIE_AGE = 3600
+# Não renovar a sessão a cada request - força logout após 1 hora
+SESSION_SAVE_EVERY_REQUEST = False
+# Expirar sessão ao fechar o navegador
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+# Nome do cookie de sessão
+SESSION_COOKIE_NAME = 'vaccinecare_sessionid'
+# Segurança do cookie
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = 'Lax'
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']

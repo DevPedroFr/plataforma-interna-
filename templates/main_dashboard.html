@@ -34,6 +34,13 @@
             padding: 0 20px 20px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .logo img {
+            max-width: 180px;
+            height: auto;
+            margin-bottom: 10px;
         }
 
         .logo h1 {
@@ -385,57 +392,147 @@
             color: #666;
         }
 
+        #stockList {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
         .stock-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px;
-            border-bottom: 1px solid #e0e0e0;
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
             cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stock-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+        }
+
+        .stock-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(42, 82, 152, 0.15);
+            border-color: #2a5298;
+        }
+
+        .stock-info {
+            margin-bottom: 15px;
         }
 
         .stock-info h4 {
-            margin-bottom: 5px;
+            margin-bottom: 8px;
+            color: #1e3c72;
+            font-size: 1.1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .stock-info h4 i {
+            color: #2a5298;
+            font-size: 1.2rem;
         }
 
         .stock-info p {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             color: #666;
+            margin: 4px 0;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .stock-info p i {
+            color: #999;
+            font-size: 0.9rem;
+        }
+
+        .stock-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 12px;
+            border-top: 1px solid #f0f0f0;
         }
 
         .stock-status {
-            padding: 6px 12px;
+            padding: 6px 14px;
             border-radius: 20px;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             font-weight: 600;
-            border: 1px solid #e6eef6;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
         }
 
         .status-available {
             background-color: #e8f5e9;
-            color: #4CAF50;
+            color: #2e7d32;
         }
 
         .status-low {
             background-color: #fff3e0;
-            color: #ff9800;
+            color: #ef6c00;
         }
 
         .status-out {
             background-color: #ffebee;
-            color: #f44336;
+            color: #c62828;
         }
 
         .qty-badge {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            min-width: 48px;
-            padding: 6px 10px;
-            border-radius: 12px;
-            background: #2a5298;
+            min-width: 56px;
+            padding: 8px 14px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
             color: #fff;
             font-weight: 700;
+            font-size: 1.1rem;
+            box-shadow: 0 2px 8px rgba(42, 82, 152, 0.3);
+        }
+
+        .stock-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-top: 10px;
+        }
+
+        .stock-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .stock-meta-item i {
+            color: #2a5298;
+            width: 16px;
+        }
+
+        .stock-hint {
+            font-size: 0.75rem;
+            color: #999;
+            font-style: italic;
         }
 
         .status-completed {
@@ -536,8 +633,9 @@
         <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}" />
         <!-- Sidebar -->
         <div class="sidebar">
+            {% load static %}
             <div class="logo">
-                <h1>Sistema de Vacinação</h1>
+                <img src="{% static 'images/logo.png' %}" alt="VaccineCare Logo">
                 <p>Painel Interno</p>
             </div>
             <ul class="menu">
@@ -965,14 +1063,39 @@
                         {% for vaccine in vaccines %}
                         <div class="stock-item" onclick="toggleStockQty(this, {{ vaccine.current_stock|default:0 }})">
                             <div class="stock-info">
-                                <h4>{{ vaccine.name }}</h4>
-                                <p>Estoque mínimo: {{ vaccine.minimum_stock }} unidades</p>
+                                <h4>
+                                    <i class="fas fa-syringe"></i>
+                                    {{ vaccine.name }}
+                                </h4>
+                                {% if vaccine.laboratory %}
+                                <p><i class="fas fa-flask"></i> {{ vaccine.laboratory }}</p>
+                                {% endif %}
                             </div>
-                            <div class="stock-right"><span class="stock-hint" style="color:#73859f;">Clique para ver</span></div>
+                            <div class="stock-meta">
+                                <div class="stock-meta-item">
+                                    <i class="fas fa-boxes"></i>
+                                    <span>Estoque mínimo: {{ vaccine.minimum_stock }} unid.</span>
+                                </div>
+                                {% if vaccine.lot_number %}
+                                <div class="stock-meta-item">
+                                    <i class="fas fa-barcode"></i>
+                                    <span>Lote: {{ vaccine.lot_number }}</span>
+                                </div>
+                                {% endif %}
+                                {% if vaccine.expiry_date %}
+                                <div class="stock-meta-item">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    <span>Validade: {{ vaccine.expiry_date|date:"d/m/Y" }}</span>
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="stock-details">
+                                <span class="stock-hint"><i class="fas fa-mouse-pointer"></i> Clique para ver estoque</span>
+                            </div>
                         </div>
                         {% empty %}
-                        <div class="empty-state">
-                            <i class="fas a-box-open"></i>
+                        <div class="empty-state" style="grid-column: 1 / -1;">
+                            <i class="fas fa-box-open" style="font-size: 3rem; color: #ccc; margin-bottom: 15px;"></i>
                             <h4>Nenhum dado de estoque disponível</h4>
                             <p>Clique em "Sincronizar Estoque" para carregar os dados do sistema matriz</p>
                         </div>
@@ -1922,9 +2045,30 @@
 
         // Mostrar quantidade do item de estoque
         function toggleStockQty(itemEl, qty) {
-            const right = itemEl.querySelector('.stock-right');
-            if (!right) return;
-            right.innerHTML = `<span class="qty-badge">${qty}</span>`;
+            const details = itemEl.querySelector('.stock-details');
+            if (!details) return;
+            
+            // Determina o status baseado na quantidade
+            let status = 'available';
+            let statusText = 'Disponível';
+            let statusIcon = 'fa-check-circle';
+            
+            if (qty === 0) {
+                status = 'out';
+                statusText = 'Esgotado';
+                statusIcon = 'fa-times-circle';
+            } else if (qty < 20) {
+                status = 'low';
+                statusText = 'Baixo';
+                statusIcon = 'fa-exclamation-triangle';
+            }
+            
+            details.innerHTML = `
+                <span class="stock-status status-${status}">
+                    <i class="fas ${statusIcon}"></i> ${statusText}
+                </span>
+                <span class="qty-badge">${qty}</span>
+            `;
         }
 
         // Submeter criação de usuário

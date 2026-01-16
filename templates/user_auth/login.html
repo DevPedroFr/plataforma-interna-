@@ -146,35 +146,7 @@
             transform: none;
         }
 
-        .demo-credentials {
-            background: #f5f7fa;
-            border-left: 4px solid #2a5298;
-            padding: 15px;
-            border-radius: 6px;
-            margin-top: 25px;
-            font-size: 0.85rem;
-        }
 
-        .demo-credentials h4 {
-            color: #2a5298;
-            margin-bottom: 10px;
-            font-size: 0.9rem;
-        }
-
-        .demo-credentials p {
-            color: #666;
-            margin-bottom: 8px;
-            line-height: 1.5;
-        }
-
-        .demo-credentials code {
-            background: white;
-            padding: 2px 6px;
-            border-radius: 3px;
-            font-family: 'Courier New', monospace;
-            color: #333;
-            font-weight: 500;
-        }
 
         .footer-text {
             text-align: center;
@@ -213,10 +185,8 @@
 <body>
     <div class="login-container">
         <div class="login-header">
-            <div class="logo">
-                <i class="fas fa-syringe"></i>
-            </div>
-            <h1>Sistema de Vacinação</h1>
+            {% load static %}
+            <img src="{% static 'images/logo.png' %}" alt="VaccineCare Logo" style="max-width: 250px; margin: 0 auto 20px; display: block;">
             <p>Faça login para continuar</p>
         </div>
 
@@ -260,16 +230,7 @@
             </button>
         </form>
 
-        <div class="demo-credentials">
-            <h4><i class="fas fa-info-circle"></i> Credenciais de Teste</h4>
-            <p>
-                <strong>Usuário:</strong> <code>admin</code><br>
-                <strong>Senha:</strong> <code>admin</code>
-            </p>
-            <p style="margin-top: 8px; margin-bottom: 0;">
-                <strong>Ou:</strong> <code>cesario</code> / <code>admin</code>
-            </p>
-        </div>
+
 
         <div class="footer-text">
             <p>Sistema seguro com autenticação por sessão</p>
