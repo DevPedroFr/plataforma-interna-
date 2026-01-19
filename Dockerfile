@@ -43,6 +43,9 @@ COPY . .
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
+# Criar migrations se não existirem
+RUN python manage.py makemigrations --noinput || true
+
 # Coletar arquivos estáticos
 RUN python manage.py collectstatic --noinput || true
 

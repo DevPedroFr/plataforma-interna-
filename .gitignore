@@ -5,7 +5,7 @@ pyproject.toml
 uv.lock
 inssues.md
 __pycache__/
-migrations/
+# migrations/  # NÃO IGNORE AS MIGRATIONS!
 
 # Logs
 logs/*.log
@@ -15,7 +15,7 @@ celerybeat-schedule*
 celerybeat.pid
 
 # Database
-*.sqlite3
+*.sqlite3  # Está correto - não subir banco local
 
 # Static files
 staticfiles/
