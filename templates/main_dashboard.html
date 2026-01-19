@@ -1041,6 +1041,11 @@
                                 <input type="time" id="na_time" style="width:100%; padding:8px; border:1px solid #ddd; border-radius:4px;" required />
                             </label>
                         </div>
+                        <div style="margin-top: 12px;">
+                            <label>Observações
+                                <textarea id="na_observations" placeholder="Adicione observações sobre o agendamento (opcional)" style="width:100%; padding:8px; border:1px solid #ddd; border-radius:4px; resize: vertical; min-height: 80px;" rows="3"></textarea>
+                            </label>
+                        </div>
                         <div style="margin-top: 15px; display:flex; justify-content: flex-end; gap:10px;">
                             <button class="btn" id="closeNewAppointment" style="background:#f5f5f5;">Cancelar</button>
                             <button class="btn btn-success" id="submitNewAppointment">Salvar</button>
@@ -2287,6 +2292,7 @@
             const vaccineName = document.getElementById('na_vaccine_name').value.trim();
             const date = document.getElementById('na_date').value;
             const time = document.getElementById('na_time').value;
+            const observations = document.getElementById('na_observations').value.trim();
 
             if (!patientName || !vaccineName || !date || !time) {
                 showCustomNotification('❌ Preencha paciente, vacina, data e horário.', 'error');
@@ -2298,6 +2304,7 @@
             formData.append('vaccine_name', vaccineName);
             formData.append('appointment_date', date);
             formData.append('appointment_time', time);
+            formData.append('observations', observations);
 
             fetch('{% url "core:create_appointment" %}', {
                 method: 'POST',
